@@ -1,0 +1,20 @@
+Bitcoin QR Popup
+
+A simpler interface to the bitcoin client for POS systems running Windows.
+
+Press F2 - a QR window appears, then automatically disappears when payment is received and acknowledged.
+Press F3 - a short history of transactions displays, making it easy to verify if the most recent payments were actually received.
+
+Supports over 160 currencies with automatic rate conversion to bitcoin. Righ-click the tray icon to select your currency.
+
+Uses a fresh bitcoin address for every transaction.
+
+Run Bitcoin QR Popup.exe to start using this application.
+
+- Must have internet connected.
+- Must have bitcoin installed and running locally (remote support coming in the future).
+- Right-click the tray icon to exit the application.
+- Add it to startup for seamless integration.
+
+- Uses openexchangerates.org for hourly updated currency exchange rates.
+- Uses 24h weighted USD price from bitcoincharts.com for bitcoin exchange rate.
