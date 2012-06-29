@@ -135,22 +135,18 @@ namespace Bitcoin_QR_Popup
             pictureBox_qr.Image = b;
         }
 
-        private string get_username()
-        {
-            return System.Security.Principal.WindowsIdentity.GetCurrent().Name.Split('\\')[1];
-        }
-
-        private void set_credentials()
+                private void set_credentials()
         {
             //TODO this is only valid for local. When remote is introduced,
             // this info will have to be entered manually.
             if (bitcoin_is_running)
             {
-                string username = get_username();
-                string path = "C:\\Users\\" + username + "\\AppData\\Roaming\\Bitcoin\\bitcoin.conf";
+                string user_app_data_path= Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string[] bitcoin_path = new string[] { user_app_data_path, "Bitcoin", "bitcoin.conf" };
+                string path = Path.Combine(bitcoin_path);
                 if (!File.Exists(path))
                 {
-                    MessageBox.Show("Unable to read config. Ensure the file exists, then restart bitcoin.\n\n" + path, "Bitcoin QR Popup", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO translate
+                    TopMostMessageBox.Show("Unable to read config. Ensure the file exists, then restart bitcoin.\n\n" + path, "Bitcoin QR Popup", MessageBoxButtons.OK); //TODO translate
                     can_exit = true;
                     return;
                 }
@@ -175,7 +171,7 @@ namespace Bitcoin_QR_Popup
                 }
                 if (rpcuser == "" || rpcpassword == "")
                 {
-                    MessageBox.Show("Unable to read rpc user and password. Ensure the file contains the following text (substituting your own values for 'bob' and 'secret').\n\nrpcuser=bob\nrpcpassword=secret", "Bitcoin QR Popup", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO translate
+                    TopMostMessageBox.Show("Unable to read rpc user and password. Ensure the file contains the following text (substituting your own values for 'bob' and 'secret').\n\nrpcuser=bob\nrpcpassword=secret", "Bitcoin QR Popup", MessageBoxButtons.OK); //TODO translate
                     can_exit = true;
                     return;
                 }
@@ -198,7 +194,7 @@ namespace Bitcoin_QR_Popup
                     }
                     else
                     {
-                        MessageBox.Show("You must set a passphrase on your wallet.\n\nOpen the client and select Settings > Encrypt Wallet.", "Bticoin QR Popup", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO translate
+                        TopMostMessageBox.Show("You must set a passphrase on your wallet.\n\nOpen the client and select Settings > Encrypt Wallet.", "Bticoin QR Popup", MessageBoxButtons.OK); //TODO translate
                         can_exit = true;
                     }
                 }
@@ -236,12 +232,12 @@ namespace Bitcoin_QR_Popup
             string daemon_path = "C:\\Program Files (x86)\\Bitcoin\\daemon\\bitcoind.exe";
             if (bitcoinqt_is_running)
             {
-                MessageBox.Show("You need to run the daemon version of bitcoin. It's at \n\n" + daemon_path, "Bitcoin QR Popup", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO translate
+                TopMostMessageBox.Show("You need to run the daemon version of bitcoin. It's at \n\n" + daemon_path, "Bitcoin QR Popup", MessageBoxButtons.OK); //TODO translate
                 can_exit = true;
             }
             else if(!bitcoin_is_running)
             {
-                MessageBox.Show("Unable to connect to bitcoin. Run it from\n\n" + daemon_path, "Bitcoin QR Popup", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO translate
+                TopMostMessageBox.Show("Unable to connect to bitcoin. Run it from\n\n" + daemon_path, "Bitcoin QR Popup", MessageBoxButtons.OK); //TODO translate
                 can_exit = true;
             }
         }
@@ -531,7 +527,7 @@ namespace Bitcoin_QR_Popup
                  message = "No transactions to show\n"; //TODO translate
             }
             message = message + "\n" + "Time now: " + DateTime.Now.ToString("HH:mm:ss");
-            MessageBox.Show(message, "Transaction History"); //TODO translate
+            TopMostMessageBox.Show(message, "Transaction History"); //TODO translate
         }
 
 
@@ -597,7 +593,7 @@ namespace Bitcoin_QR_Popup
             if (amount > 0 && received >= amount)
             {
                 timer_poll_amount.Stop();
-                MessageBox.Show("Payment received - ฿ " + received.ToString(), "Payment received");
+                TopMostMessageBox.Show("Payment received - ฿ " + received.ToString(), "Payment received");
                 hide_popup();
             }
         }
@@ -742,19 +738,62 @@ namespace Bitcoin_QR_Popup
             return macAddress;
         }
 
-        
-
-        
-
-        
-
-        
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+        static public class TopMostMessageBox
+        {
+            static public DialogResult Show(string message)
+            {
+                return Show(message, string.Empty, MessageBoxButtons.OK);
+            }
+
+            static public DialogResult Show(string message, string title)
+            {
+                return Show(message, title, MessageBoxButtons.OK);
+            }
+
+            static public DialogResult Show(string message, string title,
+                MessageBoxButtons buttons)
+            {
+                // Create a host form that is a TopMost window which will be the 
+                // parent of the MessageBox.
+                Form topmostForm = new Form();
+                // We do not want anyone to see this window so position it off the 
+                // visible screen and make it as small as possible
+                topmostForm.Size = new System.Drawing.Size(1, 1);
+                topmostForm.StartPosition = FormStartPosition.Manual;
+                System.Drawing.Rectangle rect = SystemInformation.VirtualScreen;
+                topmostForm.Location = new System.Drawing.Point(rect.Bottom + 10,
+                    rect.Right + 10);
+                topmostForm.Show();
+                // Make this form the active form and make it TopMost
+                topmostForm.Focus();
+                topmostForm.BringToFront();
+                topmostForm.TopMost = true;
+                // Finally show the MessageBox with the form just created as its owner
+                DialogResult result = MessageBox.Show(topmostForm, message, title,
+                    buttons);
+                topmostForm.Dispose(); // clean it up all the way
+
+                return result;
+            }
+        }
      
     }
 }
