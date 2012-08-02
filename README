@@ -5,7 +5,9 @@ A simpler interface to the bitcoin client for POS systems running Windows.
 Press F2 - a QR window appears, then automatically disappears when payment is received and acknowledged.
 Press F3 - a short history of transactions displays, making it easy to verify if the most recent payments were actually received.
 
-Supports over 160 currencies with automatic rate conversion to bitcoin. Righ-click the tray icon to select your currency.
+<img src="http://i.imgur.com/EVuco.png">
+
+Supports over 160 currencies with automatic rate conversion to bitcoin. Right-click the tray icon to select your currency.
 
 Uses a fresh bitcoin address for every transaction.
 
